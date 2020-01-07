@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const db = require('./database')
-const userRoutes = require('./Routes/UserRouter')
+const userRoutes = require('./src/Routes/UserRouter')
 const normalizePort = require('normalize-port');
 
 app.get('/', async (req, res, next) => {
