@@ -1,14 +1,16 @@
 const express = require('express');
 const app = express();
 const db = require('./database')
-const userRoutes = require('./src/Routes/UserRouter')
+const userRoutes = require('./src/Routes/UserRouter');
 const normalizePort = require('normalize-port');
+const bodyParser = require('body-parser');
 
-app.get('/', async (req, res, next) => {
-    const items = await Items.find();
-    res.json(items);
-})
+// support parsing of application/json type post data
+app.use(bodyParser.json());
+//support parsing of application/x-www-form-urlencoded post data
+app.use(bodyParser.urlencoded({ extended: true }));
 
+//Load Routes
 app.use('/users', userRoutes);
 
 const port = normalizePort(process.env.PORT || '3000');
