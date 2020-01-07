@@ -2,17 +2,20 @@
   "name": "watermelon",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
+    "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/express": "^4.17.2",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "mongoose": "^5.8.4",
     "nodemon": "^2.0.2",
-    "normalize-port": "^1.0.0"
+    "normalize-port": "^1.0.0",
+    "typescript": "^3.7.4"
   }
 }
