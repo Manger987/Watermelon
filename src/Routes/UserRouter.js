@@ -4,8 +4,6 @@ const router = express.Router();
 
 router.get('/', async (req, res, next) => {
     try{
-        console.log('user Router');
-        res.send('HElo world');
         // const users = await Users.find();
         // await res.json(users);
     } catch (error) {
@@ -15,7 +13,7 @@ router.get('/', async (req, res, next) => {
 
 router.post('/register', async (req, res, next) => {
     try{
-        res.json(req.body.hello);
+        res.json(req.body);
         console.log(req.body);
 
         // const users = await Users.find();
