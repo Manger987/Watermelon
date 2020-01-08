@@ -36,39 +36,49 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var express = require('express');
-var Users = require('./../Models/userModel');
+var Users = require('./../Models/user');
 var router = express.Router();
 router.get('/', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var users, error_1;
     return __generator(this, function (_a) {
-        try {
-            // const users = await Users.find();
-            // await res.json(users);
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, Users.find()];
+            case 1:
+                users = _a.sent();
+                return [4 /*yield*/, res.json(users)];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                error_1 = _a.sent();
+                throw console.log(error_1.message);
+            case 4: return [2 /*return*/];
         }
-        catch (error) {
-            throw console.log(error.message);
-        }
-        return [2 /*return*/];
     });
 }); });
 router.post('/register', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var register;
+    var users, error_2;
     return __generator(this, function (_a) {
-        try {
-            console.log(req.body);
-            register = new Users(req.body);
-            register.save(function (error) {
-                if (error)
-                    throw error;
-                // saved
-                res.json(req.body);
-            });
-            // const users = await Users.find();
-            // await res.json(users);
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                console.log(req.body);
+                return [4 /*yield*/, Users.find({ username: req.body.username })];
+            case 1:
+                users = _a.sent();
+                // if (req.body.username)
+                // Users.create(req.body, function (error: any, small: any) {
+                //     if (error) throw error
+                //     // saved!
+                res.json(users);
+                return [3 /*break*/, 3];
+            case 2:
+                error_2 = _a.sent();
+                throw console.log(error_2.message);
+            case 3: return [2 /*return*/];
         }
-        catch (error) {
-            throw console.log(error.message);
-        }
-        return [2 /*return*/];
     });
 }); });
 module.exports = router;
