@@ -7,7 +7,11 @@ var db = require('./database');
 var userRoutes = require('./src/Routes/UserRouter');
 var normalizePort = require('normalize-port');
 var bodyParser = require('body-parser');
+var config = require('./config/config');
+var dotenv = require('dotenv');
+dotenv.config();
 try {
+    app.set('llave', config.llave);
     // support parsing of application/json type post data
     app.use(bodyParser.json());
     //support parsing of application/x-www-form-urlencoded post data

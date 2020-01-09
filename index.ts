@@ -5,8 +5,12 @@ const db = require('./database')
 const userRoutes = require('./src/Routes/UserRouter');
 const normalizePort = require('normalize-port');
 const bodyParser = require('body-parser');
+const config = require('./config/config');
+const dotenv = require('dotenv');
+dotenv.config();
 
 try {
+    app.set('llave', config.llave);
     // support parsing of application/json type post data
     app.use(bodyParser.json());
     //support parsing of application/x-www-form-urlencoded post data

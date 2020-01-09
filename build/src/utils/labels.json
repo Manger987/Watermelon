@@ -1,0 +1,16 @@
+{
+    "Status": {
+        "200": "Exitoso",
+        "204": "La consulta no posee información",
+        "404": "El servidor no pudo encontrar el contenido solicitado.",
+        "500": "El servidor ha encontrado una situación que no sabe como manejarla",
+        "503": "El servidor no esta listo para manejar la petición.",
+        "504": "No se puede obtener una respuesta a tiempo."
+    },
+    "Error": {
+        "ErrorGrl": "Disculpe estamos teniendo problemas tecnicos",
+        "UsuarioExistente": "Usuario existente",
+        "UsuarioInexistente": "Usuario Inexistente",
+        "UsuarioPasswordInexistente": "Usuario y/o Password Inexistentes."
+    }
+}
