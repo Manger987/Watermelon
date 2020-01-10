@@ -42,11 +42,11 @@ router.post('/authenticate', async (req: any, res: any, next: any) => {
     if (req.body.username && req.body.password) {
         const user = await Users.findOne({ username : req.body.username});
         if (user && user.username) {
-            if (bcrypt.compare(req.body.password, user.password)) { // Iguales
+            if (bcrypt.compare(req.body.password, user.password)) { // same password
                 const payload = {
                     check:  true
                    };
-                   const token = jwt.sign(payload, process.env.LLAVE, {
+                   const token = jwt.sign(payload, process.env.KEYJWT, {
                     expiresIn: 1440
                    });
                    if (token) {
@@ -55,7 +55,7 @@ router.post('/authenticate', async (req: any, res: any, next: any) => {
                             token: token
                         });
                     } else {
-                        res.json({ mensaje: "Usuario o contraseña incorrectos"})
+                        throw new SyntaxError(labels.Error.NotToken);
                     }
             } else {
                 throw new SyntaxError(labels.Error.UsuarioPasswordDiferentes);

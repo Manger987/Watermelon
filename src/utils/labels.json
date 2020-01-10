@@ -12,6 +12,7 @@
         "UsuarioExistente": "Usuario existente",
         "UsuarioInexistente": "Usuario Inexistente",
         "UsuarioPasswordInexistente": "Usuario y/o Password Inexistentes.",
-        "UsuarioPasswordDiferentes": "Usuario y/o Password Diferentes."
+        "UsuarioPasswordDiferentes": "Usuario y/o Password Diferentes.",
+        "NotToken": "No se genero Token"
     }
 }
