@@ -3,6 +3,7 @@ const Users = require('./../Models/user');
 import labels from './../utils/labels.json';
 import { registerEnds } from './../utils';
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 router.get('/', async (req: any, res: any, next: any) => {
@@ -10,16 +11,18 @@ router.get('/', async (req: any, res: any, next: any) => {
         const users = await Users.find();
         await res.json(users);
     } catch (error) {
-        throw console.log(error.message);
+        throw res.json(error.message);
     }
 })
 
 router.post('/register', async (req: any, res: any, next: any) => {
     try{
         if (req.body.username) {
-            const user = await Users.find({ username : req.body.username});
-            if (user && user.username) throw labels.Error.UsuarioExistente; //hacer control de errores, para que no solo envie un mensaje sino un objeto con status y mensaje del error.
-            req.body.password = await bcrypt.hash(req.body.password, process.env.BCRYPT_SALT_ROUNDS);
+            const user = await Users.findOne({ username : req.body.username});
+            if (user && user.username)
+                throw new SyntaxError(labels.Error.UsuarioExistente); //hacer control de errores, para que no solo envie un mensaje sino un objeto con status y mensaje del error.
+                     
+            req.body.password = await bcrypt.hash(req.body.password, 12);
             Users.create(req.body, async function (error: any, save: any) {
                 if (error) throw error
                 res.json(await registerEnds(200, save)); // saved!
@@ -29,30 +32,37 @@ router.post('/register', async (req: any, res: any, next: any) => {
         }
         
     } catch (error) {
-        throw error.message;
+        console.log('aqui error');
+        res.json(error.message);
     }
 })
 
 router.post('/authenticate', async (req: any, res: any, next: any) => {
     
     if (req.body.username && req.body.password) {
-        const user = await Users.find({ username : req.body.username});
-            if (user && user.username) throw labels.Error.UsuarioExistente;
-            console.log('aqui:', process.env.BCRYPT_SALT_ROUNDS);
-        // if(req.body.username === user.username && req.body.password) {
-        //     const payload = {
-        //     check:  true
-        //     };
-        //     const token = jwt.sign(payload, app.get('llave'), {
-        //     expiresIn: 1440
-        //     });
-        //     res.json({
-        //     mensaje: 'Autenticación correcta',
-        //     token: token
-        //     });
-        //         } else {
-        //             res.json({ mensaje: "Usuario o contraseña incorrectos"})
-        //         }
+        const user = await Users.findOne({ username : req.body.username});
+        if (user && user.username) {
+            if (bcrypt.compare(req.body.password, user.password)) { // Iguales
+                const payload = {
+                    check:  true
+                   };
+                   const token = jwt.sign(payload, process.env.LLAVE, {
+                    expiresIn: 1440
+                   });
+                   if (token) {
+                        res.json({
+                            mensaje: 'Autenticación correcta',
+                            token: token
+                        });
+                    } else {
+                        res.json({ mensaje: "Usuario o contraseña incorrectos"})
+                    }
+            } else {
+                throw new SyntaxError(labels.Error.UsuarioPasswordDiferentes);
+            }
+        } else {
+            throw new SyntaxError(labels.Error.UsuarioInexistente);
+        }
     }  else {
         throw labels.Error.UsuarioPasswordInexistente;
     }          

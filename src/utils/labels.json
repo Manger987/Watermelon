@@ -11,6 +11,7 @@
         "ErrorGrl": "Disculpe estamos teniendo problemas tecnicos",
         "UsuarioExistente": "Usuario existente",
         "UsuarioInexistente": "Usuario Inexistente",
-        "UsuarioPasswordInexistente": "Usuario y/o Password Inexistentes."
+        "UsuarioPasswordInexistente": "Usuario y/o Password Inexistentes.",
+        "UsuarioPasswordDiferentes": "Usuario y/o Password Diferentes."
     }
 }

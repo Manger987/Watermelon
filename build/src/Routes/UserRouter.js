@@ -42,7 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require('express');
 var Users = require('./../Models/user');
 var labels_json_1 = __importDefault(require("./../utils/labels.json"));
-var utils_1 = require("./../utils");
+var bcrypt = require('bcrypt');
 var router = express.Router();
 router.get('/', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var users, error_1;
@@ -65,41 +65,33 @@ router.get('/', function (req, res, next) { return __awaiter(void 0, void 0, voi
     });
 }); });
 router.post('/register', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, error_2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var user, _a, error_2;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 4, , 5]);
-                if (!req.body.username) return [3 /*break*/, 2];
+                _b.trys.push([0, 5, , 6]);
+                if (!req.body.username) return [3 /*break*/, 3];
                 return [4 /*yield*/, Users.find({ username: req.body.username })];
             case 1:
-                user = _a.sent();
-                if (user && user.username)
-                    throw labels_json_1.default.Error.UsuarioExistente; //hacer control de errores, para que no solo envie un mensaje sino un objeto con status y mensaje del error.
-                Users.create(req.body, function (error, save) {
-                    return __awaiter(this, void 0, void 0, function () {
-                        var _a, _b;
-                        return __generator(this, function (_c) {
-                            switch (_c.label) {
-                                case 0:
-                                    if (error)
-                                        throw error;
-                                    _b = (_a = res).json;
-                                    return [4 /*yield*/, utils_1.registerEnds(200, save)];
-                                case 1:
-                                    _b.apply(_a, [_c.sent()]); // saved!
-                                    return [2 /*return*/];
-                            }
-                        });
-                    });
-                });
-                return [3 /*break*/, 3];
-            case 2: throw labels_json_1.default.Error.UsuarioInexistente;
-            case 3: return [3 /*break*/, 5];
-            case 4:
-                error_2 = _a.sent();
-                throw error_2.message;
-            case 5: return [2 /*return*/];
+                user = _b.sent();
+                if (user && user.username) {
+                    console.log('aca', user);
+                    throw new SyntaxError(labels_json_1.default.Error.UsuarioExistente); //hacer control de errores, para que no solo envie un mensaje sino un objeto con status y mensaje del error.
+                }
+                _a = req.body;
+                return [4 /*yield*/, bcrypt.hash(req.body.password, 12)];
+            case 2:
+                _a.password = _b.sent();
+                console.log('HEREEEE', req.body.password);
+                return [3 /*break*/, 4];
+            case 3: throw labels_json_1.default.Error.UsuarioInexistente;
+            case 4: return [3 /*break*/, 6];
+            case 5:
+                error_2 = _b.sent();
+                console.log('aqui error');
+                res.json(error_2.message);
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); });
