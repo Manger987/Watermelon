@@ -5,6 +5,7 @@ import { registerEnds } from './../utils';
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
+const cors = require('cors')
 
 router.get('/', async (req: any, res: any, next: any) => {
     try{
@@ -15,7 +16,7 @@ router.get('/', async (req: any, res: any, next: any) => {
     }
 })
 
-router.post('/register', async (req: any, res: any, next: any) => {
+router.post('/register', cors(),async (req: any, res: any, next: any) => {
     try{
         if (req.body.username) {
             const user = await Users.findOne({ username : req.body.username});
@@ -37,7 +38,7 @@ router.post('/register', async (req: any, res: any, next: any) => {
     }
 })
 
-router.post('/authenticate', async (req: any, res: any, next: any) => {
+router.post('/authenticate', cors(), async (req: any, res: any, next: any) => {
     
     if (req.body.username && req.body.password) {
         const user = await Users.findOne({ username : req.body.username});
