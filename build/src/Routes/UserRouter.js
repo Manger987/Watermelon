@@ -42,8 +42,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require('express');
 var Users = require('./../Models/user');
 var labels_json_1 = __importDefault(require("./../utils/labels.json"));
+var utils_1 = require("./../utils");
 var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
 var router = express.Router();
+var cors = require('cors');
 router.get('/', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var users, error_1;
     return __generator(this, function (_a) {
@@ -59,57 +62,109 @@ router.get('/', function (req, res, next) { return __awaiter(void 0, void 0, voi
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
-                throw console.log(error_1.message);
+                throw res.json(error_1.message);
             case 4: return [2 /*return*/];
         }
     });
 }); });
-router.post('/register', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, _a, error_2;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+router.post('/register', cors(), function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, _a, error_2, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
-                _b.trys.push([0, 5, , 6]);
+                _d.trys.push([0, 5, , 7]);
                 if (!req.body.username) return [3 /*break*/, 3];
-                return [4 /*yield*/, Users.find({ username: req.body.username })];
+                return [4 /*yield*/, Users.findOne({ username: req.body.username })];
             case 1:
-                user = _b.sent();
-                if (user && user.username) {
-                    console.log('aca', user);
+                user = _d.sent();
+                if (user && user.username)
                     throw new SyntaxError(labels_json_1.default.Error.UsuarioExistente); //hacer control de errores, para que no solo envie un mensaje sino un objeto con status y mensaje del error.
-                }
                 _a = req.body;
                 return [4 /*yield*/, bcrypt.hash(req.body.password, 12)];
             case 2:
-                _a.password = _b.sent();
-                console.log('HEREEEE', req.body.password);
+                _a.password = _d.sent();
+                Users.create(req.body, function (error, save) {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var _a, _b;
+                        return __generator(this, function (_c) {
+                            switch (_c.label) {
+                                case 0:
+                                    if (error)
+                                        throw error;
+                                    _b = (_a = res).json;
+                                    return [4 /*yield*/, utils_1.registerEnds(200, save)];
+                                case 1:
+                                    _b.apply(_a, [_c.sent()]); // saved!
+                                    return [2 /*return*/];
+                            }
+                        });
+                    });
+                });
                 return [3 /*break*/, 4];
             case 3: throw labels_json_1.default.Error.UsuarioInexistente;
-            case 4: return [3 /*break*/, 6];
+            case 4: return [3 /*break*/, 7];
             case 5:
-                error_2 = _b.sent();
-                console.log('aqui error');
-                res.json(error_2.message);
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                error_2 = _d.sent();
+                console.log('aqui error:', error_2);
+                _c = (_b = res).json;
+                return [4 /*yield*/, utils_1.registerEnds(error_2.code, error_2.message)];
+            case 6:
+                _c.apply(_b, [_d.sent()]);
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); });
-router.post('/authenticate', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var user;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+router.post('/authenticate', cors(), function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, payload, token, _a, _b, error_3, _c, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
             case 0:
-                if (!(req.body.username && req.body.password)) return [3 /*break*/, 2];
-                return [4 /*yield*/, Users.find({ username: req.body.username })];
+                _e.trys.push([0, 11, , 13]);
+                console.log("req:::", req.body);
+                if (!(req.body.username && req.body.password)) return [3 /*break*/, 9];
+                return [4 /*yield*/, Users.findOne({ username: req.body.username })];
             case 1:
-                user = _a.sent();
-                if (user && user.username)
-                    throw labels_json_1.default.Error.UsuarioExistente;
-                console.log('aqui:', process.env.BCRYPT_SALT_ROUNDS);
-                return [3 /*break*/, 3];
-            case 2: throw labels_json_1.default.Error.UsuarioPasswordInexistente;
-            case 3: return [2 /*return*/];
+                user = _e.sent();
+                if (!(user && user.username)) return [3 /*break*/, 7];
+                if (!bcrypt.compare(req.body.password, user.password)) return [3 /*break*/, 5];
+                payload = {
+                    check: true
+                };
+                token = jwt.sign(payload, process.env.KEYJWT, {
+                    expiresIn: 1440
+                });
+                if (!token) return [3 /*break*/, 3];
+                // res.json({
+                //     mensaje: 'Autenticación correcta',
+                //     token: token
+                // });
+                _b = (_a = res).json;
+                return [4 /*yield*/, utils_1.registerEnds(200, { token: token })];
+            case 2:
+                // res.json({
+                //     mensaje: 'Autenticación correcta',
+                //     token: token
+                // });
+                _b.apply(_a, [_e.sent()]);
+                return [3 /*break*/, 4];
+            case 3: throw new Error(labels_json_1.default.Error.NotToken);
+            case 4: return [3 /*break*/, 6];
+            case 5: throw new Error(labels_json_1.default.Error.UsuarioPasswordDiferentes);
+            case 6: return [3 /*break*/, 8];
+            case 7: throw new Error(labels_json_1.default.Error.UsuarioInexistente);
+            case 8: return [3 /*break*/, 10];
+            case 9: throw new Error(labels_json_1.default.Error.UsuarioPasswordInexistente);
+            case 10: return [3 /*break*/, 13];
+            case 11:
+                error_3 = _e.sent();
+                console.log('aqui error:', error_3);
+                _d = (_c = res).json;
+                return [4 /*yield*/, utils_1.registerEnds(500, error_3)];
+            case 12:
+                _d.apply(_c, [_e.sent()]);
+                return [3 /*break*/, 13];
+            case 13: return [2 /*return*/];
         }
     });
 }); });

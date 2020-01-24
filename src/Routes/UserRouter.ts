@@ -33,40 +33,46 @@ router.post('/register', cors(),async (req: any, res: any, next: any) => {
         }
         
     } catch (error) {
-        console.log('aqui error');
-        res.json(error.message);
+        console.log('aqui error:', error);
+        res.json(await registerEnds(error.code, error.message));
     }
 })
 
 router.post('/authenticate', cors(), async (req: any, res: any, next: any) => {
-    
-    if (req.body.username && req.body.password) {
-        const user = await Users.findOne({ username : req.body.username});
-        if (user && user.username) {
-            if (bcrypt.compare(req.body.password, user.password)) { // same password
-                const payload = {
-                    check:  true
-                   };
-                   const token = jwt.sign(payload, process.env.KEYJWT, {
-                    expiresIn: 1440
-                   });
-                   if (token) {
-                        res.json({
-                            mensaje: 'Autenticación correcta',
-                            token: token
-                        });
-                    } else {
-                        throw new SyntaxError(labels.Error.NotToken);
-                    }
+    try {
+        console.log("req:::",req.body);
+        if (req.body.username && req.body.password) {
+            const user = await Users.findOne({ username : req.body.username});
+            if (user && user.username) {
+                if (bcrypt.compare(req.body.password, user.password)) { // same password
+                    const payload = {
+                        check:  true
+                    };
+                    const token = jwt.sign(payload, process.env.KEYJWT, {
+                        expiresIn: 1440
+                    });
+                    if (token) {
+                            // res.json({
+                            //     mensaje: 'Autenticación correcta',
+                            //     token: token
+                            // });
+                            res.json(await registerEnds(200,{token: token}));
+                        } else {
+                            throw new Error(labels.Error.NotToken);
+                        }
+                } else {
+                    throw new Error(labels.Error.UsuarioPasswordDiferentes);
+                }
             } else {
-                throw new SyntaxError(labels.Error.UsuarioPasswordDiferentes);
+                throw new Error(labels.Error.UsuarioInexistente);
             }
-        } else {
-            throw new SyntaxError(labels.Error.UsuarioInexistente);
+        }  else {
+            throw new Error(labels.Error.UsuarioPasswordInexistente);
         }
-    }  else {
-        throw labels.Error.UsuarioPasswordInexistente;
-    }          
+    } catch (error){
+        console.log('aqui error:', error);
+        res.json(await registerEnds(500, error));
+    }    
 });
 
 module.exports = router;

@@ -41,20 +41,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var labels_json_1 = __importDefault(require("./labels.json"));
 var Clases_1 = require("../Clases");
-function registerEnds(status, dataReturn) {
+function registerEnds(code, dataReturn) {
     return __awaiter(this, void 0, void 0, function () {
         var retorna;
         return __generator(this, function (_a) {
             retorna = new Clases_1.ResultStandard;
-            retorna.status = status;
+            retorna.code = code;
             retorna.data = dataReturn;
-            switch (status) {
+            switch (code) {
                 case 500: {
-                    retorna.statusMessage = labels_json_1.default.Status[500];
+                    retorna.statusMessage = dataReturn.message;
                     break;
                 }
                 case 200: {
                     retorna.statusMessage = labels_json_1.default.Status[200];
+                    break;
+                }
+                case 204: {
+                    retorna.statusMessage = labels_json_1.default.Status[204];
                     break;
                 }
                 case 404: {

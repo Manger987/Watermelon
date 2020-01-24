@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var ResultStandard = /** @class */ (function () {
     function ResultStandard() {
-        this.status = 0;
+        this.code = 0;
         this.statusMessage = '';
         this.data = {};
     }

@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 // Create a new express application instance
 const app = express();
 const db = require('./database')
@@ -7,32 +8,27 @@ const normalizePort = require('normalize-port');
 const bodyParser = require('body-parser');
 const config = require('./config/config');
 const dotenv = require('dotenv');
-const cors = require('cors');
+
 dotenv.config();
 
 try {
+    // Configurar cabeceras y cors
+    app.use((req: any, res: any, next: any) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+        res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+        res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+        next();
+    });
+
+    app.use(cors());
     app.set('llave', config.llave);
     // support parsing of application/json type post data
     app.use(bodyParser.json());
     //support parsing of application/x-www-form-urlencoded post data
     app.use(bodyParser.urlencoded({ extended: true }));
 
-    var whitelist = ['http://localhost:3000/', 'http://10.0.75.1:3000/'];
-    const corsOptions = {
-        "origin": "*",
-        "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-        "preflightContinue": false,
-        "optionsSuccessStatus": 204
-        // origin: function (origin: any, callback: any) {
-        //     if (whitelist.indexOf(origin) !== -1) {
-        //         callback(null, true)
-        //     } else {
-        //         callback(new Error('Not allowed by CORS'))
-        //     }
-        // },
-        // optionsSuccessStatus: 200
-    }
-    app.use(cors(corsOptions));
+    
 
     //Load Routes
     app.use('/users', userRoutes);
