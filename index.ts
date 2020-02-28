@@ -34,7 +34,7 @@ try {
     app.use('/users', userRoutes);
 
     const port = normalizePort(process.env.PORT || '5500');
-    app.listen(port, () => console.log('Escuchando por el puerto 5500!!!'));
+    app.listen(port, () => console.log(`Escuchando por el puerto ${port}!!!`));
 } catch (error) {
     throw console.log('ERROR:',error);
 }

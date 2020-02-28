@@ -27,8 +27,8 @@ try {
     app.use(bodyParser.urlencoded({ extended: true }));
     //Load Routes
     app.use('/users', userRoutes);
-    var port = normalizePort(process.env.PORT || '5500');
-    app.listen(port, function () { return console.log('Escuchando por el puerto 5500!!!'); });
+    var port_1 = normalizePort(process.env.PORT || '5500');
+    app.listen(port_1, function () { return console.log("Escuchando por el puerto " + port_1 + "!!!"); });
 }
 catch (error) {
     throw console.log('ERROR:', error);

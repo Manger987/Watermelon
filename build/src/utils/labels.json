@@ -11,7 +11,7 @@
         "ErrorGrl": "Disculpe estamos teniendo problemas tecnicos",
         "UsuarioExistente": "Usuario existente",
         "UsuarioInexistente": "Usuario Inexistente",
-        "UsuarioPasswordInexistente": "Usuario y/o Password Inexistentes.",
+        "UsuarioPasswordInexistente": "Usuario y/o Password Inexistentes. No vienen por parametro.",
         "UsuarioPasswordDiferentes": "Usuario y/o Password Diferentes.",
         "NotToken": "No se genero Token"
     }
